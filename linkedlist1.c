@@ -48,16 +48,20 @@ void insertf(){
 void display()
     {
         node* temp=head;
-        while(temp->next!=NULL)
+        if(temp==NULL)
+            printf("List is empty");
+        else{
+        while(temp!=NULL)
             {
                 printf("%d\t",temp->data);
                 temp=temp->next;
             }
+        }
     }
 
 void deletee()
     {
-        node* head=temp;
+        node* temp=head;
         node* prev;
         if(head==NULL)
             printf("list empty");
@@ -87,7 +91,7 @@ void insertafter()
         printf("Enter the node after which to be inserted");
         scanf("%d",&ch);
         node* temp=head;
-        new=createnode(val);
+        node* new=createnode(val);
         if(temp==NULL)
             head=new;
         else{
@@ -102,9 +106,57 @@ void insertbefore()
     {
         printf("Enter the value to be inserted :");
         int val,ch;
+        scanf("%d",&val);
         printf("Enter the node before which to be inserted :");
         scanf("%d",&ch);
-        node* temp=head,curr;
-        new=createnode(val);
+        node* temp=head,*curr;
+        node* new=createnode(val);
         if(temp==NULL)
+            head=new;
+        else{
+            while(temp->next!=NULL && temp->data!=ch){
+                curr=temp;
+                temp=temp->next;
+            }
+            curr->next=new;
+            new->next=temp;
+        }
+    }
+void main()
+    {
+        printf("LINKED LIST \n1. INSERT AT END\n2. INSERT AT FRONT\n3. INSERT AFTER A NODE\n4. INSERT BEFORE A NODE\n5. DELETE FROM FRONT\n6. DELETE FROM END\n7. DISPLAY\n8. EXIT\n");
+        printf("Enter your choice");
+        int ch;
+        scanf("%d",&ch);
+        while(ch!=8)
+            {
+                switch(ch)
+                    {
+                        case 1:
+                            inserte();
+                            break;
+                        case 2:
+                            insertf();
+                            break;
+                        case 3:
+                            insertafter();
+                            break;
+                        case 4:
+                            insertbefore();
+                            break;
+                        case 5:
+                            deletef();
+                            break;
+                        case 6:
+                            deletee();
+                            break;
+                        case 7:
+                            display();
+                            break;
+                        default:
+                            printf("Invalid choice");
+                    }
+                printf("Enter your choice");
+                scanf("%d",&ch);
+            }
     }
