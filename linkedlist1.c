@@ -1,5 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
+#define size 10
+int stck[size],top=-1;
+
 typedef struct node{
     int data;
     struct node* next;
@@ -32,6 +35,65 @@ void inserte()
         }
     }
 
+void minimumelem()
+    {
+        node* temp=head;
+        int min=head->data;
+        while(temp!=NULL)
+            {
+                if(temp->data<min)
+                    min=temp->data;
+                temp=temp->next;
+            }
+        printf("The minimum element is %d",min);
+    }
+
+void deletekey()
+    {
+        node* temp=head,*curr;
+        int key;
+        printf("Enter the node to be deleted");
+        scanf("%d",&key);
+        while(temp!=NULL&&temp->data!=key)
+            {
+                curr=temp;
+                temp=temp->next;
+            }
+        if(temp==NULL)
+            printf("Node not found");
+        else
+            {
+                curr->next=temp->next;
+            }
+    }
+
+void deletepos()
+    {
+        int pos,count=1;
+        printf("Enter the position to be deleted");
+        scanf("%d",&pos);
+        node* temp=head,*curr;
+        if(temp==NULL)
+            {
+                printf("The list is empty");
+            }
+        else{
+            if (pos==1){
+                head=head->next;
+                free(temp);
+            }
+            else{
+                while(count!=pos)
+                    {
+                        count++;
+                        curr=temp;
+                        temp=temp->next;
+                    }
+                curr->next=temp->next;
+                free(temp);
+            }
+        }
+    }
 void insertf(){
     int val;
     printf("Enter the value to be inserted");
@@ -45,6 +107,54 @@ void insertf(){
     }
     
 }
+void push(int val)
+    {
+        if(top==size-1)
+           // printf("Stack Overflow");
+           exit(1);
+        else
+            {
+                stck[++top]=val;
+            }
+    }
+int pop()
+    {
+        int val;
+        if(top==-1)
+            //printf("Stack Underflow");
+            return -1;
+        else
+            {
+             val=stck[top--];       
+            }
+        return val;
+    }
+
+void reversepush()
+{
+    node* temp=head;
+    if(head==NULL)
+        printf("List Empty");
+    else{
+        while(temp!=NULL){
+            push(temp->data);
+            temp=temp->next;
+        }
+    }
+}
+
+void reversepop()
+    {
+        node* temp=head;
+        int val;
+        while(temp!=NULL){
+            val=pop();
+            if(val!=-1){
+                temp->data=val;
+                temp=temp->next;
+            }
+        }
+    }
 void display()
     {
         node* temp=head;
@@ -124,11 +234,11 @@ void insertbefore()
     }
 void main()
     {
-        printf("LINKED LIST \n1. INSERT AT END\n2. INSERT AT FRONT\n3. INSERT AFTER A NODE\n4. INSERT BEFORE A NODE\n5. DELETE FROM FRONT\n6. DELETE FROM END\n7. DISPLAY\n8. EXIT\n");
+        printf("LINKED LIST \n1. INSERT AT END\n2. INSERT AT FRONT\n3. INSERT AFTER A NODE\n4. INSERT BEFORE A NODE\n5. DELETE FROM FRONT\n6. DELETE FROM END\n7. DISPLAY\n8. MINIMUM ELEMENT\n9. DELETE KEY\n10. DELETE AT POSITION\n11. REVERSE LIST\n12. EXIT\n");
         printf("Enter your choice");
         int ch;
         scanf("%d",&ch);
-        while(ch!=8)
+        while(ch!=12)
             {
                 switch(ch)
                     {
@@ -151,6 +261,20 @@ void main()
                             deletee();
                             break;
                         case 7:
+                            display();
+                            break;
+                        case 8:
+                            minimumelem();
+                            break;
+                        case 9:
+                            deletekey();
+                            break;
+                        case 10:
+                            deletepos();
+                            break;
+                        case 11:
+                            reversepush();
+                            reversepop();
                             display();
                             break;
                         default:
