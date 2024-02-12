@@ -1,118 +1,109 @@
 #include <stdio.h>
 #include <stdlib.h>
+typedef struct node{
+    int data;
+    struct node*left,*right;
+}node;
 
-// Define a node structure for the binary tree
-struct Node {
-    char data;
-    struct Node* left;
-    struct Node* right;
-};
+node* root=NULL,*temp,*rightl,*leftl;
 
-// Function to create a new node
-struct Node* createNode(char data) {
-    struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
-    newNode->data = data;
-    newNode->left = NULL;
-    newNode->right = NULL;
-    return newNode;
-}
+node* insert()
+    {
+        int x;
+        printf("Enter data ,-1 for no data ");
+        scanf("%d",&x);
+        if(x==-1)
+            return NULL;
+        node* new=(node*)malloc(sizeof(node));
+        new->data=x;
+        printf("Enter the left child of %d\n",x);
+        new->left=insert();
+        printf("Enter the right child of %d\n",x);
+        new->right=insert();
+        return new;
+    }
 
-// Function to insert a new node into the binary tree
-struct Node* insert(struct Node* root, char data, char child) {
-    if (root == NULL) {
-        return createNode(data);
-    } else {
-        if (child == 'l' || child == 'L')
-            root->left = insert(root->left, data, child);
-        else
-            root->right = insert(root->right, data, child);
-        return root;
+void inorder( node*ptr){
+    if(ptr!=NULL){
+        inorder(ptr->left);
+        printf("%d ",ptr->data);
+        inorder(ptr->right);
     }
 }
-
-// Function to perform an inorder traversal of the binary tree
-void inorderTraversal(struct Node* root) {
-    if (root != NULL) {
-        inorderTraversal(root->left);
-        printf("%c ", root->data);
-        inorderTraversal(root->right);
-    }
-}
-
-// Function to find the node with minimum value in a tree. 
-struct Node* findMin(struct Node* node) {
-    struct Node* current = node;
-    while (current && current->left != NULL)
-        current = current->left;
-    return current;
-}
-
-// Function to delete a node from the binary tree
-struct Node* deleteNode(struct Node* root, char data) {
-    if (root == NULL)
-        return root;
-
-    if (data < root->data)
-        root->left = deleteNode(root->left, data);
-    else if (data > root->data)
-        root->right = deleteNode(root->right, data);
-    else {
-        if (root->left == NULL) {
-            struct Node* temp = root->right;
-            free(root);
-            return temp;
-        } else if (root->right == NULL) {
-            struct Node* temp = root->left;
-            free(root);
-            return temp;
+node* findleaf(node* node)
+    {
+        if(node==NULL)
+            return NULL;
+        else if(node->left==NULL && node->right==NULL)
+            return node;
+        else{
+            leftl=findleaf(node->left);
+            rightl=findleaf(node->right);
+            return (leftl!=NULL?leftl:rightl);
         }
-
-        struct Node* temp = findMin(root->right);
-        root->data = temp->data;
-        root->right = deleteNode(root->right, temp->data);
     }
-    return root;
-}
-
+node* delete(node* node,int data)
+    {
+        if(node==NULL)
+            return NULL;
+        else if(node->data!=data)
+            {
+                node->left=delete(node->left,data);
+                node->right=delete(node->right,data);
+            }
+        else{
+            if(node->left==NULL && node->right==NULL)
+                {
+                    free(node);
+                    return NULL;
+                }
+            else if(node->left==NULL)
+                {
+                    temp=node;
+                    node=node->right;
+                    free(temp);
+                    return node;
+                }
+            else if(node->right==NULL){
+                temp=node;
+                node=node->left;
+                free(temp);
+                return node;
+            }
+            else{
+                temp=findleaf(node->right);
+                node->data=temp->data;
+                node->right=delete(node->right,temp->data);
+            }
+        }
+    }
 int main() {
-    struct Node* root = NULL;
-    int choice;
-    char data, child;
-
-    do {
-        printf("\nBinary Tree Operations\n");
-        printf("1. Insert\n");
-        printf("2. Delete\n");
-        printf("3. Display (Inorder Traversal)\n");
-        printf("4. Exit\n");
-        printf("Enter your choice: ");
-        scanf("%d", &choice);
-
-        switch (choice) {
+    printf("1:Insert\n2:Inorder\n3:deletion\n4:exit");
+    int choice,data;
+    do{
+        printf("enter choice: ");
+        scanf("%d",&choice);
+        switch(choice){
             case 1:
-                printf("Enter character to insert: ");
-                scanf(" %c", &data);
-                printf("Enter 'L' to insert as left child or 'R' to insert as right child: ");
-                scanf(" %c", &child);
-                root = insert(root, data, child);
+                root=insert();
                 break;
             case 2:
-                printf("Enter character to delete: ");
-                scanf(" %c", &data);
-                root = deleteNode(root, data);
+                printf("inorder\n");
+                inorder(root);
                 break;
             case 3:
-                printf("Inorder Traversal: ");
-                inorderTraversal(root);
-                printf("\n");
+                printf("enter data to be deleted : ");
+                scanf("%d",&data);
+                delete(root,data);
+                printf("element deleted!!");
                 break;
             case 4:
-                printf("Exiting program...\n");
+                printf("exit");
                 break;
-            default:
-                printf("Invalid choice!\n");
         }
-    } while (choice != 4);
+    }while(choice!=4);
+    
 
     return 0;
 }
+
